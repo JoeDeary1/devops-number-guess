@@ -29,7 +29,3 @@ public class NumberGuessing {
     }
 }
 
-git add NumberGuessing.java
-git commit -m "Add guessing game Java code"
-git push origin main
-
