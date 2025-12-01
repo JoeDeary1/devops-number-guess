@@ -1,0 +1,17 @@
+- name: Install kubectl and Minikube
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Install kubectl via snap
+      shell: sudo snap install kubectl --classic
+
+    - name: Download Minikube binary
+      shell: |
+        curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        chmod +x minikube
+        sudo mv minikube /usr/local/bin/
+
+    - name: Start Minikube using docker driver as ubuntu user
+      become: no
+      shell: minikube start --driver=docker

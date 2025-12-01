@@ -1,0 +1,50 @@
+- name: Install Docker on this VM
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: 1. Update APT package manager
+      apt:
+        update_cache: yes
+
+    - name: 2. Uninstall unscd package if present
+      apt:
+        name: unscd
+        state: absent
+
+    - name: 3. Install dependency packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+        state: present
+
+    - name: 4. Get Docker APT key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+    - name: 5. Add Docker APT repository
+      shell: |
+        sudo add-apt-repository \
+          "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+    - name: 6. Update package manager after adding Docker repo
+      apt:
+        update_cache: yes
+
+    - name: 7. Install Docker packages
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: 8. Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes

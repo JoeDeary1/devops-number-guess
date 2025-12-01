@@ -1,0 +1,20 @@
+- name: Deploy Flask ML weather app to Kubernetes
+  hosts: localhost
+  become: no
+
+  tasks:
+    - name: Create Kubernetes deployment from DockerHub image
+      shell: |
+        kubectl create deployment weather-ml-app \
+          --image=hking301/weather-ml-app:1.0
+
+    - name: Create NodePort service for the app
+      shell: |
+        kubectl expose deployment/weather-ml-app \
+          --type=NodePort \
+          --port=5000 \
+          --name=weather-service
+
+    - name: Scale deployment to 4 replicas
+      shell: |
+        kubectl scale deployments/weather-ml-app --replicas=4
